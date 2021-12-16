@@ -59,7 +59,7 @@ public class SafeLog4J {
 		Loggers.log( "" );
 
 		AgentBuilder builder = new AgentBuilder.Default()
-		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
+		// .with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
 		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
 		.with(new InstListener(new StringMatcher(".log4j.core.lookup.JndiLookup", StringMatcher.Mode.ENDS_WITH)));
 
@@ -67,16 +67,17 @@ public class SafeLog4J {
 		.type(nameEndsWith(".log4j.core.Logger"))
 		.transform((b,t,c,m) -> b.method(named("log")).intercept(MethodDelegation.to(LogInterceptor.class)));
 
-		if ( checkMode ) {
-			builder = builder
-			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
-			.transform((b,t,c,m) -> b.method(named("lookup")).intercept(MethodDelegation.to(LookupInterceptor.class)));
-		}
-
+		// stub out methods first, then install check
 		if ( blockMode ) {
 			builder = builder
 			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
 			.transform((b,t,c,m) -> b.method(any()).intercept(StubMethod.INSTANCE));
+		}
+
+		if ( checkMode ) {
+			builder = builder
+			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
+			.transform((b,t,c,m) -> b.method(named("lookup")).intercept(MethodDelegation.to(LookupInterceptor.class)));
 		}
 
 		builder.installOn(inst);

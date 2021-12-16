@@ -54,8 +54,8 @@ public class LogInterceptor {
 		
 				if ( SafeLog4J.log4ShellFound ) {
 					Loggers.log("  Payload detected in JndiLookup" );
+					Loggers.log("  Log4j is exploitable if any untrusted input is logged" );
 					if ( !SafeLog4J.blockMode ) {
-						Loggers.log("  Log4j is exploitable if any untrusted input is logged" );
 						Loggers.log("  Enable 'block' mode to prevent exploitation" );
 					}
 				}
@@ -85,7 +85,5 @@ public class LogInterceptor {
 		if ( !SafeLog4J.checkMode ) {
 			Loggers.log("  Enable 'check' mode to verify exploitability" );
 		}
-}
-
-
+	}
 }
