@@ -67,16 +67,16 @@ SafeLog4j can be run as a Java command to connect to and patch a running Java pr
 
 To list Java processes:
 ```shell
-java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-1.0.jar
 ```
 
 To patch a Java process
 ```shell
-java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar 123
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-1.0.jar 123
 ```
 To patch all Java processes
 ```shell
-java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar all
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-1.0.jar all
 ```
 ## Comparison to other Scanners and Structures
 | Defense | How it compares |
