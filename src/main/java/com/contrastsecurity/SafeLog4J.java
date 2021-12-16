@@ -1,6 +1,11 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.StubMethod;
@@ -93,7 +98,7 @@ public class SafeLog4J {
 				inst.retransformClasses(reTransform.toArray(new Class[reTransform.size()]));
 				Loggers.log("Engaged " + reTransform.size() + " Log4J classes.");
 			} catch (UnmodifiableClassException e) {
-				Loggers.log("Unable to retransorm and defend previously loaded loggers: " + e.getMessage());
+				Loggers.log("Unable to retransform and defend previously loaded loggers: " + e.getMessage());
 				Loggers.log(reTransform.stream().map(clazz -> clazz.getName()).collect(Collectors.joining(", ")));
 			}
 		}
