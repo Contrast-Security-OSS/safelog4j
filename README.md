@@ -46,7 +46,7 @@ When Command Mode is used, we recommend pairing it with Agent Mode to avoid re-w
 
 SafeLog4j is a Java agent and can be used on any Java application from any OpenJDK vendor: Oracle, AdoptOpenJDK, Azul, Corretto, Liberica, etc.
 
-1. Download the latest safelog4j-1.0.jar
+1. Download the latest [safelog4j-1.0.1.jar](https://github.com/Contrast-Security-OSS/safelog4j/releases#:~:text=3-,safelog4j%2D1.0.1.jar,-3.57%20MB)
 1. Place the jar file anywhere on the server you wish to defend - /opt for instance
 1. Create an environment variable for the user, either in .bashrc or any other location that can affect the user:
   ```shell
