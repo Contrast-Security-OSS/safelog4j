@@ -10,7 +10,7 @@ You can use safelog4j on any JVM and it doesn't require source code.
 
 ## Why should you use this
 
-Unfortunately, log4j is deployed in a huge variety of ways that make traditional detection very difficult. Scanning file systems, code repos, or conotainers is very likely to fail to detect log4j accurately. Attempting to test, scan, or fuzz for log4shell is even more difficult as there are many reasons that you might not hit on the exactly right input with the exactly right syntax.
+Unfortunately, log4j is deployed in a huge variety of ways that make traditional detection very difficult. Scanning file systems, code repos, or containers is very likely to fail to detect log4j accurately. Attempting to test, scan, or fuzz for log4shell is even more inaccurate, requiring exactly right input with the exactly right syntax.
 
 * log4j could be buried in a fat jar, war, or ear
 * log4j could be shaded in another jar
