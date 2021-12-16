@@ -1,8 +1,12 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -83,6 +87,22 @@ public class SafeLog4J {
 		}
 
 		builder.installOn(inst);
+		
+		Loggers.log("Looking for previously loaded Log4J2.");
+		Class[] classes = inst.getAllLoadedClasses();
+		List<Class> reTransform = Arrays.stream(classes).filter(clazz -> clazz.getName().endsWith("suffix"))
+		.collect(Collectors.toList());
+		if(reTransform.isEmpty()){
+			Loggers.log("No previously loaded Log4J2 detected.");
+		}else{
+			try {
+				inst.retransformClasses(reTransform.toArray(new Class[reTransform.size()]));
+				Loggers.log("Engaged " + reTransform.size() + " Log4J classes.");
+			} catch (UnmodifiableClassException e) {
+				Loggers.log("Unable to retransorm and defend previously loaded loggers: " + e.getMessage());
+				Loggers.log(reTransform.stream().map(clazz -> clazz.getName()).collect(Collectors.joining(", ")));
+			}
+		}
 	}
 
 }
