@@ -14,7 +14,7 @@ public class LookupInterceptor {
         // is this a test log?
         if ( SafeLog4J.testScope.inScope() ) {
             SafeLog4J.log4ShellFound = true;
-            return "";
+            return null;
         }
 
         if ( SafeLog4J.blockMode ) {
