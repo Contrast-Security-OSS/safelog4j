@@ -8,6 +8,8 @@ Safelog4j is an instrumentation-based tool to help you discover, verify, and sol
 
 You can use safelog4j on any JVM and it doesn't require source code.
 
+![safelog4j-screenshot](https://github.com/Contrast-Security-OSS/safelog4j/blob/main/src/main/resources/safelog4j-screenshot.png?raw=true)
+
 ## Why should you use this
 
 Unfortunately, log4j is deployed in a huge variety of ways that make traditional detection very difficult. Scanning file systems, code repos, or containers is very likely to fail to detect log4j accurately. Attempting to test, scan, or fuzz for log4shell is even more inaccurate, requiring exactly right input with the exactly right syntax.
@@ -56,7 +58,6 @@ SafeLog4j is a Java agent and can be used on any Java application from any OpenJ
 
 Once in place, your application will be defended and you will see output like the picture below. Logs by the defense begin with [safelog4j].
 
-PICTURE
 
 ### Command Mode
 
