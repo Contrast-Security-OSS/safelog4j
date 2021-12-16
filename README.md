@@ -3,6 +3,9 @@
 SafeLog4j can identify and resolve the log4j2 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). It can work with custom and third party applications that run on Java and does not require source code.
 
 The patch works by connecting to a Java process, looking for affected versions of Log4j2, and neutralizing the vulnerability. Other application functionality is unaffected and applications proceed as normal with a reduced risk profile.
+
+This tool tests and verifies the vulnerability using a functioning yet safe payload. This ensures that the security tool takes action if and only if it is necessary without false positives.
+
 - If the application was previously vulnerable, this will patch it.
 - If the application was not previously vulnerable, this will simply do nothing and can remain in place.
 
