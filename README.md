@@ -42,7 +42,7 @@ SafeLog4j is a Java agent and can be used on any Java application from any OpenJ
 1. Place the jar file anywhere on the server you wish to defend - /opt for instance
 1. Create an environment variable for the user, either in .bashrc or any other location that can affect the user:
   ```shell
-  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-1.0.jar
+  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-1.0.jar=[check|block|both|none]  # default is both
   ```
 1. Restart the application.
 
