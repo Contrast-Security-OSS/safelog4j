@@ -23,6 +23,13 @@
 			<artifactId>byte-buddy</artifactId>
 			<version>1.12.3</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>any</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/../lib/tools.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
