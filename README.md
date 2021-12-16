@@ -11,6 +11,14 @@ This tool tests and verifies the vulnerability using a functioning yet safe payl
 
 ## Usage
 
+SafeLog4j operates in two modes:
+1. Agent Mode, to defend Java applications as they are started and restarted.
+1. Command Mode, to dynamically patch a running application.
+
+When Command Mode is used, we recommend pairing it with Agent Mode to avoid re-work the next time the application is restarted.
+
+### Agent Mode
+
 SafeLog4j is a Java agent and can be used on any Java application from any OpenJDK vendor: Oracle, AdoptOpenJDK, Azul, Corretto, Liberica, etc.
 
 1. Download the latest SafeLog4j2
@@ -25,6 +33,26 @@ Once in place, your application will be defended and you will see output like th
 
 PICTURE
 
+### Command Mode
+
+SafeLog4j can be run as a Java command to connect to and patch a running Java process. If you attempt to patch a process more than once, the first and correct patch will remain in place.
+
+1. Access a terminal where the application is located, with the same user account as your application.
+1. Run safelog4j as a Java application. It will list your Java processes, allowing you to patch each one or all.
+
+To list Java processes:
+```shell
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar
+```
+
+To patch a Java process
+```shell
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar 123
+```
+To patch all Java processes
+```shell
+java -Xbootclasspath/a:/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/lib/tools.jar -jar safelog4j-0.9.1.jar all
+```
 ## Comparison to other Scanners and Structures
 
 | Defense | How it compares |
