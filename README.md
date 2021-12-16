@@ -1,37 +1,53 @@
 # safelog4j
 
-SafeLog4j can identify and resolve the log4j2 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046). It can work with custom and third party applications that run on Java and does not require source code.
+Safelog4j is an instrumentation-based tool to help you discover, verify, and solve the log4shell vulnerability in log4jv2 [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046).
 
-The patch works by connecting to a Java process, looking for affected versions of Log4j2, and neutralizing the vulnerability. Other application functionality is unaffected and applications proceed as normal with a reduced risk profile.
+* accurately discovers the use of log4j
+* verifies that the log4shell vulnerability is actually present and exploitable
+* prevents the log4shell vulnerability from being exploited
 
-This tool tests and verifies the vulnerability using a functioning yet safe payload. This ensures that the security tool takes action if and only if it is necessary without false positives.
+You can use safelog4j on any JVM and it doesn't require source code.
 
-- If the application was previously vulnerable, this will patch it.
-- If the application was not previously vulnerable, this will simply do nothing and can remain in place.
+## Why should you use this
+
+Unfortunately, log4j is deployed in a huge variety of ways that make traditional detection very difficult. Scanning file systems, code repos, or conotainers is very likely to fail to detect log4j accurately. Attempting to test, scan, or fuzz for log4shell is even more difficult as there are many reasons that you might not hit on the exactly right input with the exactly right syntax.
+
+* log4j could be buried in a fat jar, war, or ear
+* log4j could be shaded in another jar
+* log4j could be included in the appserver, not the code repo
+* log4j could be part of dynamically loaded code or plugin
+* log4j could have multiple different versions with different classloaders, some vulnerable some not
+* log4j could be masked by use of slf4j or other layers
+* log4j could be renamed, recompiled, or otherwise changed
+
+Fortunately, we can use instrumentation to insert a few simple sensors that will detect log4j in all of these situations.
+
+## How it works
+
+Safelog4j is pretty simple. You add it to your JVM as described below. After that, it will simply "check" or "block" for log4shell.  There are four modes of operation.
+
+* CHECK means that safelog4j will actually test every log4j instance for log4shell. safelog4j will generate with a synthetic log messagge, send it through log4j, and detect whether it caused the JNDI lookup to occur.  If so, we know this application is susceptible to log4shell if it sends any untrusted input to that log4j instance.
+
+* BLOCK means that safelog4j will stub out all the methods in the JNDI lookup class.  This is the recommended approach to ensure that log4j can't be exploited. It is harmless, except for the total prevention of this attack.
+
+* BOTH simply means that both CHECK and BLOCK will occur.
+
+* NONE disables both CHECK and BLOCK, allowing you to keep the agent in place but disabled.
 
 ## Usage
 
 SafeLog4j is a Java agent and can be used on any Java application from any OpenJDK vendor: Oracle, AdoptOpenJDK, Azul, Corretto, Liberica, etc.
 
-1. Download the latest SafeLog4j2
-1. Place the download on the server you wish to defend
+1. Download the latest safelog4j-1.0.jar
+1. Place the jar file anywhere on the server you wish to defend - /opt for instance
 1. Create an environment variable for the user, either in .bashrc or any other location that can affect the user:
   ```shell
-  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-0.9.1.jar
+  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-1.0.jar
   ```
 1. Restart the application.
 
 Once in place, your application will be defended and you will see output like the picture below. Logs by the defense begin with [safelog4j].
 
 PICTURE
-
-## Comparison to other Scanners and Structures
-
-| Defense | How it compares |
-| ------- | ----- |
-| File scanning | Logging frameworks can missed when buried inside [fat jars](https://www.baeldung.com/gradle-fat-jar) that are commonly used. A single file does not exist and therefore will not be found. SafeLog4j will find those. |
-| Shaded JARs | [Shading](https://maven.apache.org/plugins/maven-shade-plugin/) is a process of moving classes from one package name to another. Logging frameworks are often moved for compatibility reasons to avoid conflicts between libraries. SafeLog4j will find shaded copies of log4j2. |
-| Application Servers | Scanning tools will miss vulnerable versions of log4j2 when they scan an application that goes inside the application server but do not scan the application server itself. SafeLog4j analyzes the entire stack to locate vulnerable copies of log4j2. |
-| Multiple copies of log4j and other logging frameworks | Some applications, especially large enterprise applications, may contain multiple copies of logging frameworks. While many detection techniques will stop at the first, SafeLog4j will identify and neutralize each vulnerable Log4j2 as it is loaded. |
 
 
