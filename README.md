@@ -26,7 +26,7 @@ Fortunately, we can use instrumentation to insert a few simple sensors that will
 
 Safelog4j is pretty simple. You add it to your JVM as described below. After that, it will simply "check" or "block" for log4shell.  There are four modes of operation.
 
-* CHECK means that safelog4j will actually test every log4j instance for log4shell. safelog4j will generate with a synthetic log messagge, send it through log4j, and detect whether it caused the JNDI lookup to occur.  If so, we know this application is susceptible to log4shell if it sends any untrusted input to that log4j instance.
+* CHECK means that safelog4j will actually test every log4j instance for log4shell. safelog4j will generate with a synthetic log message, send it through log4j, and detect whether it caused the JNDI lookup to occur.  If so, we know this application is susceptible to log4shell if it sends any untrusted input to that log4j instance.
 
 * BLOCK means that safelog4j will stub out all the methods in the JNDI lookup class.  This is the recommended approach to ensure that log4j can't be exploited. It is harmless, except for the total prevention of this attack.
 
