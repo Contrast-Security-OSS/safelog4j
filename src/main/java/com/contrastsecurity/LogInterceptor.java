@@ -10,7 +10,6 @@ public class LogInterceptor {
     public static String intercept(@This Object logger, @SuperCall Callable<String> zuper) throws Exception {
 		// we are in a log call, so enter scope and run synthetic log test one time
 		SafeLog4J.logScope.enterScope();
-
 		try {
 			Class cl = logger.getClass();
 
@@ -29,6 +28,9 @@ public class LogInterceptor {
 				if ( SafeLog4J.blockMode ) {
 					block( cl );
 				}
+				Loggers.log( "============================================================================================" );
+				Loggers.log( "" );
+				Loggers.log( "" );
 			}
 		} catch( Exception e ) {
 			Loggers.log( "Error during log interception -- " + e.getMessage() );
@@ -40,27 +42,32 @@ public class LogInterceptor {
 
 	public static void check( Class cl ) throws Exception {
 		if ( !SafeLog4J.log4jTested && !SafeLog4J.logScope.inNestedScope() ) {
-			String payload = "${jndi:rmi://192.168.1.1:1099/test}";
-			Loggers.log( "" );
-			Loggers.log( "CHECK: Testing for vulnerability to log4shell..." );
-			Loggers.log( "  Sending synthetic FATAL log message (below) to log4j..." );
-	
-			// send payload through log4j
-			Loggers.log4j( payload, cl );
-	
-			if ( SafeLog4J.log4ShellFound ) {
-				if ( SafeLog4J.blockMode ) {
+			try {
+				SafeLog4J.testScope.enterScope();
+				String payload = "${jndi:rmi://192.168.1.1:1099/test}";
+				Loggers.log( "" );
+				Loggers.log( "CHECK: Testing for vulnerability to log4shell..." );
+				Loggers.log( "  Sending synthetic FATAL log message (below) to log4j..." );
+		
+				// send payload through log4j
+				Loggers.log4j( payload, cl );
+		
+				if ( SafeLog4J.log4ShellFound ) {
 					Loggers.log("  Payload detected in JndiLookup" );
+					if ( !SafeLog4J.blockMode ) {
+						Loggers.log("  Log4j is exploitable if any untrusted input is logged" );
+						Loggers.log("  Enable 'block' mode to prevent exploitation" );
+					}
 				}
-				if ( SafeLog4J.checkMode ) {
-					Loggers.log("  Log4j is exploitable if any untrusted input is logged" );
+				else {
+					Loggers.log("  Payload not detected in JndiLookup" );
+					Loggers.log("  Log4j is not exploitable" );
 				}
-				if ( !SafeLog4J.blockMode ) {
-					Loggers.log("  Enable 'block' mode to prevent exploitation" );
-				}
-			}
 
-			SafeLog4J.log4jTested = true;
+				SafeLog4J.log4jTested = true;
+			} finally {
+				SafeLog4J.testScope.leaveScope();
+			}
 		}
 	}
 
@@ -75,10 +82,10 @@ public class LogInterceptor {
 			Loggers.log( "  Log4J JNDI lookup class not present" );
 		}
 		Loggers.log( "  No longer vulnerable to log4shell" );
-		Loggers.log( "============================================================================================" );
-		Loggers.log( "" );
-		Loggers.log( "" );
-	}
+		if ( !SafeLog4J.checkMode ) {
+			Loggers.log("  Enable 'check' mode to verify exploitability" );
+		}
+}
 
 
 }

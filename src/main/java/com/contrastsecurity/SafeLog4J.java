@@ -1,11 +1,7 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.StubMethod;
 import net.bytebuddy.matcher.StringMatcher;
@@ -15,12 +11,11 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 public class SafeLog4J {
 
 	public static BinaryScope logScope = new BinaryScope();
+	public static BinaryScope testScope = new BinaryScope();
 
 	public static boolean blockMode = true;
 	public static boolean checkMode = true;
-
 	public static boolean agentRunning = false;
-
 	public static boolean log4jTested = false;
 	public static boolean log4jFound = false;
 	public static boolean log4ShellFound = false;
@@ -59,27 +54,29 @@ public class SafeLog4J {
 		Loggers.log( "Check mode: " + ( checkMode ? "enabled" : "disabled" ) );
 		Loggers.log( "Block mode: " + ( blockMode ? "enabled" : "disabled" ) );
 		Loggers.log( "" );
-		Loggers.log( "Tests for log4shell will run on each instance of log4j when it is loaded" );
+		Loggers.log( "Java supports running multiple different log4j instances in separate classloaders." );
+		Loggers.log( "SafeLog4J will analyze and protect each log4j instance when first loaded" );
 		Loggers.log( "" );
 
 		AgentBuilder builder = new AgentBuilder.Default()
+		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
 		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
 		.with(new InstListener(new StringMatcher(".log4j.core.lookup.JndiLookup", StringMatcher.Mode.ENDS_WITH)));
+
+		builder = builder
+		.type(nameEndsWith(".log4j.core.Logger"))
+		.transform((b,t,c,m) -> b.method(named("log")).intercept(MethodDelegation.to(LogInterceptor.class)));
+
+		if ( checkMode ) {
+			builder = builder
+			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
+			.transform((b,t,c,m) -> b.method(named("lookup")).intercept(MethodDelegation.to(LookupInterceptor.class)));
+		}
 
 		if ( blockMode ) {
 			builder = builder
 			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
 			.transform((b,t,c,m) -> b.method(any()).intercept(StubMethod.INSTANCE));
-		}
-
-		if ( checkMode ) {
-			builder = builder
-			.type(nameEndsWith(".log4j.core.Logger"))
-			.transform((b,t,c,m) -> b.method(named("log")).intercept(MethodDelegation.to(LogInterceptor.class)));
-
-			builder = builder
-			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
-			.transform((b,t,c,m) -> b.method(named("lookup")).intercept(MethodDelegation.to(LookupInterceptor.class)));
 		}
 
 		builder.installOn(inst);
