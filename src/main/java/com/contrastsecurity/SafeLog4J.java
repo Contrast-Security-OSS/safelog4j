@@ -1,6 +1,11 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
+import java.lang.instrument.UnmodifiableClassException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.StubMethod;
