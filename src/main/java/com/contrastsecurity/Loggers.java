@@ -22,7 +22,7 @@ public class Loggers {
 
     public static void log( String msg ) {
         String stamp = formatter.format(new Date());
-        String message = stamp + " SECURITY --- [safelog4j] " + msg;
+        String message = stamp + " TRACE --- [safelog4j] " + msg;
         System.out.println( message );
     }
 

@@ -1,22 +1,19 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.implementation.MethodDelegation;
-import net.bytebuddy.implementation.StubMethod;
+import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy;
+import net.bytebuddy.agent.builder.AgentBuilder.RedefinitionStrategy;
+import net.bytebuddy.agent.builder.AgentBuilder.TypeStrategy;
 import net.bytebuddy.matcher.StringMatcher;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 public class SafeLog4J {
 
-	public static BinaryScope logScope = new BinaryScope();
-	public static BinaryScope testScope = new BinaryScope();
+	public static BinaryScope logScope = new BinaryScope("log");
+	public static BinaryScope testScope = new BinaryScope("test");
 
 	public static boolean blockMode = true;
 	public static boolean checkMode = true;
@@ -63,45 +60,27 @@ public class SafeLog4J {
 		Loggers.log( "SafeLog4J will analyze and protect each log4j instance when first loaded" );
 		Loggers.log( "" );
 
-		AgentBuilder builder = new AgentBuilder.Default()
-		// .with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
+		new AgentBuilder.Default()
+		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
 		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
-		.with(new InstListener(new StringMatcher(".log4j.core.lookup.JndiLookup", StringMatcher.Mode.ENDS_WITH)));
+		.with(new InstListener(new StringMatcher(".log4j.core.lookup.JndiLookup", StringMatcher.Mode.ENDS_WITH)))
+		.with(RedefinitionStrategy.RETRANSFORMATION)
+		.with(InitializationStrategy.NoOp.INSTANCE)
+		.with(TypeStrategy.Default.REDEFINE)
+		.disableClassFormatChanges()
 
-		builder = builder
 		.type(nameEndsWith(".log4j.core.Logger"))
-		.transform((b,t,c,m) -> b.method(named("log")).intercept(MethodDelegation.to(LogInterceptor.class)));
+		.transform(new AgentBuilder.Transformer.ForAdvice()
+			.include(ClassLoader.getSystemClassLoader(), inst.getClass().getClassLoader())
+			.advice(isMethod(), LogAdvice.class.getName()))
 
-		// stub out methods first, then install check
-		if ( blockMode ) {
-			builder = builder
-			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
-			.transform((b,t,c,m) -> b.method(any()).intercept(StubMethod.INSTANCE));
-		}
+		.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
+        .transform(new AgentBuilder.Transformer.ForAdvice()
+			.include(ClassLoader.getSystemClassLoader(), inst.getClass().getClassLoader())
+			.advice(isMethod(), LookupAdvice.class.getName()))
 
-		if ( checkMode ) {
-			builder = builder
-			.type(nameEndsWith(".log4j.core.lookup.JndiLookup"))
-			.transform((b,t,c,m) -> b.method(named("lookup")).intercept(MethodDelegation.to(LookupInterceptor.class)));
-		}
-
-		builder.installOn(inst);
+		.installOn(inst);
 		
-		Loggers.log("Looking for previously loaded Log4J2.");
-		Class[] classes = inst.getAllLoadedClasses();
-		List<Class> reTransform = Arrays.stream(classes).filter(clazz -> clazz.getName().endsWith("suffix"))
-		.collect(Collectors.toList());
-		if(reTransform.isEmpty()){
-			Loggers.log("No previously loaded Log4J2 detected.");
-		}else{
-			try {
-				inst.retransformClasses(reTransform.toArray(new Class[reTransform.size()]));
-				Loggers.log("Engaged " + reTransform.size() + " Log4J classes.");
-			} catch (UnmodifiableClassException e) {
-				Loggers.log("Unable to retransform and defend previously loaded loggers: " + e.getMessage());
-				Loggers.log(reTransform.stream().map(clazz -> clazz.getName()).collect(Collectors.joining(", ")));
-			}
-		}
 	}
 
 }

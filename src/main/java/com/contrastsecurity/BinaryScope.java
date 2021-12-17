@@ -2,6 +2,8 @@ package com.contrastsecurity;
 
 public final class BinaryScope {
 
+	private String name = "scope";
+
 	private final ThreadLocal<Counter> counter = new ThreadLocal<Counter>() {
 		@Override
 		protected Counter initialValue() {
@@ -9,7 +11,11 @@ public final class BinaryScope {
 		}
 	};
 
-	public boolean inScope() {
+	public BinaryScope(String name) {
+		this.name = name;
+    }
+
+    public boolean inScope() {
 		return counter.get().value != 0;
 	}
 
@@ -23,15 +29,17 @@ public final class BinaryScope {
 
 	public void enterScope() {
 		counter.get().value++;
+		// Loggers.log( "ENTERED SCOPE: " + this );
 	}
 
 	public void leaveScope() {
 		counter.get().value--;
+		// Loggers.log( "EXITED SCOPE: " + this );
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf(counter.get().value);
+		return name + "-" + counter.get().value;
 	}
 
 	private static final class Counter {
