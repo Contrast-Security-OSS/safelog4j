@@ -1,18 +1,15 @@
 package com.contrastsecurity;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
-import net.bytebuddy.agent.ByteBuddyAgent;
 
-import com.sun.tools.attach.AgentInitializationException;
-import com.sun.tools.attach.AgentLoadException;
-import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
+import net.bytebuddy.agent.ByteBuddyAgent;
+
 public class App {
+
     public static void main(String[] args){
         System.out.println("SafeLog4j by Contrast Security");
         System.out.println( "https://contrastsecurity.com" );
@@ -21,8 +18,13 @@ public class App {
             try{
                 String pid = args[0];
                 String options = args.length>=2 ? args[1] : null;
-                String agentFilePath = "safelog4j-1.0.2.jar";
-                File agentFile = new File(agentFilePath);
+
+                String filename = App.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI()
+                    .getPath();
+                File agentFile = new File(filename);
                 ByteBuddyAgent.attach(agentFile.getAbsoluteFile(), pid, options);
                 System.out.println("Attached to target jvm and loaded agent successfully");
             }catch(Exception e){
