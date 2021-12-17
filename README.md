@@ -12,7 +12,7 @@ Safelog4j is an instrumentation-based tool to help you discover, verify, and sol
 
 Safelog4j doesn't rely on version numbers or filenames. Instead, it instruments the application to find log4j and perform an internal test to prove the app is exploitable. Safelog4j also uses instrumentation to disable the JNDI lookup code used by the attack. This is the most effective way to inoculate an otherwise vulnerable application or API.
 
-![safelog4j-screenshot](https://github.com/Contrast-Security-OSS/safelog4j/blob/main/src/main/resources/safelog4j-screenshot.png?raw=true)
+![safelog4j-screenshot](https://github.com/Contrast-Security-OSS/safelog4j/blob/resources/safelog4j-screenshot.png?raw=true)
 
 
 ## Why should you use this

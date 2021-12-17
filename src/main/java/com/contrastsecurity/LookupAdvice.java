@@ -6,7 +6,8 @@ public class LookupAdvice {
 
     @Advice.OnMethodEnter( skipOn = String.class )
     public static String onEnter() {
-        // is this a test log?
+
+        // is this a synthetic security test log message?
         if ( SafeLog4J.testScope.inScope() ) {
             SafeLog4J.log4ShellFound = true;
             return "attack blocked by safelog4j";
@@ -16,13 +17,12 @@ public class LookupAdvice {
             return "attack blocked by safelog4j";
         }
 
-        // in check mode so don't skip to the return
+        // the following line means to return original method return - see skipOn
         return null;
     }
 
     @Advice.OnMethodExit
     public static void onExit( @Advice.Enter String enter, @Advice.Return(readOnly = false) String ret) {
-        ret = enter;
     }
 
 }

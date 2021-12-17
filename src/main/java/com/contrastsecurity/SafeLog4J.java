@@ -41,7 +41,7 @@ public class SafeLog4J {
 		switch(args) {
 			case "block" : checkMode = false; break;
 			case "check" : blockMode = false; break;
-			case "none"  : checkMode = false; blockMode = false; break;
+			case "none"  : return;
 		}
 
 		Loggers.log( "SafeLog4J from Contrast Security" );
@@ -61,8 +61,8 @@ public class SafeLog4J {
 		Loggers.log( "" );
 
 		new AgentBuilder.Default()
-		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
-		.with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
+		// .with(AgentBuilder.Listener.StreamWriting.toSystemError().withTransformationsOnly())
+		// .with(AgentBuilder.Listener.StreamWriting.toSystemError().withErrorsOnly())
 		.with(new InstListener(new StringMatcher(".log4j.core.lookup.JndiLookup", StringMatcher.Mode.ENDS_WITH)))
 		.with(RedefinitionStrategy.RETRANSFORMATION)
 		.with(InitializationStrategy.NoOp.INSTANCE)

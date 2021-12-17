@@ -21,7 +21,7 @@ public class App {
             try{
                 String pid = args[0];
                 String options = args.length>=2 ? args[1] : null;
-                String agentFilePath = "safelog4j-1.0.1.jar";
+                String agentFilePath = "safelog4j-1.0.2.jar";
                 File agentFile = new File(agentFilePath);
                 ByteBuddyAgent.attach(agentFile.getAbsoluteFile(), pid, options);
                 System.out.println("Attached to target jvm and loaded agent successfully");
