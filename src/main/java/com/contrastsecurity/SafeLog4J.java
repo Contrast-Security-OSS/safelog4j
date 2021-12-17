@@ -38,7 +38,7 @@ public class SafeLog4J {
 		agentRunning = true;
 
 		if ( args == null ) args = "both";
-		switch(args) {
+		switch(args.toLowerCase()) {
 			case "block" : checkMode = false; break;
 			case "check" : blockMode = false; break;
 			case "none"  : return;
