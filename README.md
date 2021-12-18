@@ -9,7 +9,7 @@ discover, verify, and solve log4shell without scanning or upgrading
 <br>
 </b></p>
 
-If you're wrestling with log4shell [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046), the best thing to do is to upgrade your log4j to the latest secure version.  But if you can't do that for whatever reason, you probably want to be *really* sure that you have a problem and an easy way to fix it.
+If you're wrestling with log4shell [CVE-2021-45046](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046), the best longterm plan is to upgrade your log4j to the latest secure version.  But if you can't do that for whatever reason, you probably want to be *really* sure that you have a problem and an easy way to fix it.
 
 Safelog4j:
 * accurately discovers the use of log4j
