@@ -42,24 +42,25 @@ Remember, you may be getting false results from other approaches. Scanning file 
 
 ## Launching a JVM with safelog4j...
 
-Download the latest [safelog4j-1.0.3.jar](https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.3/safelog4j-1.0.3.jar)
+Basically you just have to get the latest [safelog4j-1.0.3.jar](https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.3/safelog4j-1.0.3.jar) and then tell the JVM to use it with the -javaagent flag.
 
   ```shell
-  java -javaagent:safelog4j-x.x.x.jar=[check|block|both|none] -jar yourjar.jar
+  curl -O https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.3/safelog4j-1.0.3.jar
+  java -javaagent:safelog4j-1.0.3.jar=[check|block|both|none] -jar yourjar.jar
   ```
   -or-
   ```
-  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-x.x.x.jar=[check|block|both|none]
+  curl -O https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.3/safelog4j-1.0.3.jar
+  JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-1.0.3.jar=[check|block|both|none]
+  java -jar yourjar.jar
   ```
 
 ## Attaching to a running JVM with safelog4j...
 
   ```shell
-  java -javaaagent:safelog4j-x.x.x.jar   # will print available JVM processes with PID
-  ```
-  -then-
-  ```
-  java -javaagent:safelog4j-x.x.x.jar PID [check|block|both|none]
+  curl -O https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.3/safelog4j-1.0.3.jar
+  java -javaagent:safelog4j-1.0.3.jar     # will print available JVM processes with PID
+  java -javaagent:safelog4j-1.0.3.jar PID [check|block|both|none]
   ```
 
 
