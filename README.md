@@ -68,6 +68,17 @@ You can use safelog4j in just about any environment using Java.
 * NONE disables both CHECK and BLOCK, allowing you to keep the agent in place but disabled.
 
 
+## Building and Contributing
+
+We welcome pull requests and issues. Thanks!
+
+>
+> $ git clone 
+> $ mvn clean install
+> $ java -jar target/safelog4j-x.x.x.jar
+> 
+
+
 ## License
 
 This software is licensed under the Apache 2 license
