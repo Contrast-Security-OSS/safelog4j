@@ -32,17 +32,27 @@ Unfortunately, log4j is deployed in a huge variety of ways that make traditional
 
 You can use safelog4j in just about any environment using Java.
 
-1. Download the latest [safelog4j-1.0.1.jar](https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.1/safelog4j-1.0.1.jar)
-1. Place the jar file anywhere on the server you wish to defend
-1. Either set the javaagent flag wherever you launch Java
+1. Download the latest [safelog4j-1.0.3.jar](https://github.com/Contrast-Security-OSS/safelog4j/releases/download/v1.0.1/safelog4j-1.0.1.jar)
+
+You can run it wherever you launch a JVM...
+
   ```shell
-  java -javaagent:/path/to/safelog4j-1.0.jar=[check|block|both|none] -jar yourjar.jar
+  java -javaagent:safelog4j-x.x.x.jar=[check|block|both|none] -jar yourjar.jar
   ```
   -or-
   ```
   JAVA_TOOL_OPTIONS=-javaagent:/path/to/safelog4j-1.0.jar=[check|block|both|none]
   ```
-1. Restart the application.
+
+Or you can attach to a JVM that is already running...
+
+  ```shell
+  java -javaaagent:safelog4j-x.x.x.jar   # will print available JVM processes with PID
+  ```
+  -then-
+  ```
+  java -javaagent:safelog4j-x.x.x.jar PID [check|block|both|none]
+  ```
 
 
 ## Safelog4j Options

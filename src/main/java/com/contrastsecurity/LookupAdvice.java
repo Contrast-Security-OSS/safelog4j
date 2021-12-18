@@ -17,7 +17,7 @@ public class LookupAdvice {
             return "attack blocked by safelog4j";
         }
 
-        // the following line means to return original method return - see skipOn
+        // 'return null' causes ByteBuddy to execute original method body and return normally - see skipOn
         return null;
     }
 
