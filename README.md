@@ -16,7 +16,7 @@ Safelog4j:
 * verifies that the log4shell vulnerability is actually present and exploitable
 * prevents the log4shell vulnerability from being exploited
 
-Safelog4j doesn't rely on version numbers or filenames. Instead, it instruments the application to find log4j and perform an internal test to prove the app is exploitable. Safelog4j also uses instrumentation to disable the JNDI lookup code used by the attack. This is the most effective way to inoculate an otherwise vulnerable application or API.
+Safelog4j doesn't rely on version numbers or filenames. Instead, it instruments the application to find log4j and perform an internal test to prove the app is exploitable (check). Safelog4j also uses instrumentation to disable the JNDI lookup code used by the attack (block). This is the most effective way to inoculate an otherwise vulnerable application or API.
 
 ![safelog4j-screenshot](https://github.com/Contrast-Security-OSS/safelog4j/blob/main/resources/safelog4j-screenshot.png?raw=true)
 
