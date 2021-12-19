@@ -48,10 +48,10 @@ public class SafeLog4J {
 			case "none"  : return;
 		}
 
-		Loggers.log( "SafeLog4J from Contrast Security" );
+		Loggers.log( "SafeLog4J by Contrast Security" );
 		Loggers.log( "https://contrastsecurity.com" );
 		Loggers.log( "" );
-		Loggers.log( "Instrumenting application to prevent log4shell exploits" );
+		Loggers.log( "Instrumentation-based help with finding and fixing log4shell" );
 		Loggers.log( "Usage: -javaagent:safelog4j.jar         -- enable both check and block" );
 		Loggers.log( "     : -javaagent:safelog4j.jar=check   -- check for log4j exploitability" );
 		Loggers.log( "     : -javaagent:safelog4j.jar=block   -- block log4j exploits from succeeding" );
@@ -85,7 +85,7 @@ public class SafeLog4J {
 		.type(new AgentBuilder.RawMatcher() {
 			@Override
 			public boolean matches(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, Class<?> classBeingRedefined, ProtectionDomain protectionDomain) {
-				if ( typeDescription.getPackage().getName().contains( ".log4j.")) {
+				if ( typeDescription.getCanonicalName().contains( ".log4j.")) {
 					Libraries.add( protectionDomain.getCodeSource().getLocation());
 				}
 				return false;
