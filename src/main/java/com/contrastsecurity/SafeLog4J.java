@@ -1,12 +1,16 @@
 package com.contrastsecurity;
 
 import java.lang.instrument.Instrumentation;
+import java.security.ProtectionDomain;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.AgentBuilder.InitializationStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder.RedefinitionStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder.TypeStrategy;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.matcher.StringMatcher;
+import net.bytebuddy.utility.JavaModule;
 
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
@@ -56,8 +60,7 @@ public class SafeLog4J {
 		Loggers.log( "Check mode: " + ( checkMode ? "enabled" : "disabled" ) );
 		Loggers.log( "Block mode: " + ( blockMode ? "enabled" : "disabled" ) );
 		Loggers.log( "" );
-		Loggers.log( "Java supports running multiple different log4j instances in separate classloaders." );
-		Loggers.log( "SafeLog4J will analyze and protect each log4j instance when first loaded" );
+		Loggers.log( "SafeLog4J analyzes and protects all log4j instances across classloaders" );
 		Loggers.log( "" );
 
 		new AgentBuilder.Default()
@@ -79,6 +82,22 @@ public class SafeLog4J {
 			.include(ClassLoader.getSystemClassLoader(), inst.getClass().getClassLoader())
 			.advice(isMethod(), LookupAdvice.class.getName()))
 
+		.type(new AgentBuilder.RawMatcher() {
+			@Override
+			public boolean matches(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, Class<?> classBeingRedefined, ProtectionDomain protectionDomain) {
+				if ( typeDescription.getPackage().getName().contains( ".log4j.")) {
+					Libraries.add( protectionDomain.getCodeSource().getLocation());
+				}
+				return false;
+			}
+		})
+		.transform(new AgentBuilder.Transformer() {
+			@Override
+			public Builder<?> transform(Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
+				return null;
+			}
+		})
+		
 		.installOn(inst);
 		
 	}

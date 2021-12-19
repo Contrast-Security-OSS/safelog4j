@@ -19,6 +19,10 @@ public class LogAdvice {
 				Loggers.log( "" );
 				Loggers.log( "============================================================================================" );
 				Loggers.log( "Potentially vulnerable log4j instance detected in " + cl.getClassLoader() + "...");
+                
+                for ( Library lib : Libraries.getLibraries() ) {
+                    Loggers.log( "> " + lib );
+                }
 
 				if ( SafeLog4J.checkMode ) {
 					check( cl );
@@ -45,7 +49,7 @@ public class LogAdvice {
                 SafeLog4J.testScope.enterScope();
                 String payload = "${jndi:rmi://192.168.1.1:1099/test}";
                 Loggers.log( "" );
-                Loggers.log( "CHECK: Testing for vulnerability to log4shell..." );
+                Loggers.log( "CHECK: Testing for log4shell exploitability..." );
                 Loggers.log( "  Sending synthetic FATAL log message (below) to log4j..." );
         
                 // send payload through log4j

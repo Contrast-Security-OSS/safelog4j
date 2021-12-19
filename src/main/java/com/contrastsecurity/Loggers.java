@@ -11,7 +11,8 @@ public class Loggers {
     public static Map<Class, Object> map = new HashMap<Class, Object>();
 
     public static void put( Object logger ) {
-        map.put( logger.getClass(), logger );
+        Class clazz = logger.getClass();
+        map.put( clazz, logger );
     }
 
     public static Object get( Class cl ) {
