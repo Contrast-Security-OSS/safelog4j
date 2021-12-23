@@ -23,7 +23,8 @@ public class SafeLog4J {
 	public static boolean checkMode = true;
 	public static boolean agentRunning = false;
 	public static boolean log4jTested = false;
-	public static boolean log4jFound = false;
+	public static boolean log4jLibrariesFound = false;
+	public static boolean log4ShellClassesFound = false;
 	public static boolean log4ShellFound = false;
 
 	public static void premain(String args, Instrumentation inst) {
@@ -48,19 +49,20 @@ public class SafeLog4J {
 			case "none"  : return;
 		}
 
-		Loggers.log( "SafeLog4J by Contrast Security" );
-		Loggers.log( "https://contrastsecurity.com" );
+		Loggers.log( "     _____ ___    ______________    ____  ________ __      __" );
+		Loggers.log( "    / ___//   |  / ____/ ____/ /   / __ \\/ ____/ // /     / /" );
+		Loggers.log( "    \\__ \\/ /| | / /_  / __/ / /   / / / / / __/ // /___  / / " );
+		Loggers.log( "   ___/ / ___ |/ __/ / /___/ /___/ /_/ / /_/ /__  __/ /_/ /" ); 
+		Loggers.log( "  /____/_/  |_/_/   /_____/_____/\\____/\\____/  /_/  \\____/" );
+
+		Loggers.log( "    by Contrast Security - https://contrastsecurity.com" );
 		Loggers.log( "" );
-		Loggers.log( "Instrumentation-based help with finding and fixing log4shell" );
-		Loggers.log( "Usage: -javaagent:safelog4j.jar         -- enable both check and block" );
-		Loggers.log( "     : -javaagent:safelog4j.jar=check   -- check for log4j exploitability" );
-		Loggers.log( "     : -javaagent:safelog4j.jar=block   -- block log4j exploits from succeeding" );
-		Loggers.log( "     : -javaagent:safelog4j.jar=none    -- disable both check and block" );
+		Loggers.log( " Safelog4j is an instrumentation-based security tool to help teams" );
+		Loggers.log( "discover, verify, and solve log4shell without scanning or upgrading." );
+		Loggers.log( "      https://github.com/Contrast-Security-OSS/safelog4j" );
 		Loggers.log( "" );
-		Loggers.log( "Check mode: " + ( checkMode ? "enabled" : "disabled" ) );
-		Loggers.log( "Block mode: " + ( blockMode ? "enabled" : "disabled" ) );
-		Loggers.log( "" );
-		Loggers.log( "SafeLog4J analyzes and protects all log4j instances across classloaders" );
+		Loggers.log( "Checking: " + ( checkMode ? "enabled" : "disabled" ) );
+		Loggers.log( "Blocking: " + ( blockMode ? "enabled" : "disabled" ) );
 		Loggers.log( "" );
 
 		new AgentBuilder.Default()
@@ -86,7 +88,8 @@ public class SafeLog4J {
 			@Override
 			public boolean matches(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, Class<?> classBeingRedefined, ProtectionDomain protectionDomain) {
 				if ( typeDescription.getCanonicalName().contains( ".log4j.")) {
-					Libraries.add( protectionDomain.getCodeSource().getLocation());
+					log4jLibrariesFound = true;
+					Libraries.addLibrary( protectionDomain.getCodeSource().getLocation().toString() );
 				}
 				return false;
 			}
@@ -99,7 +102,7 @@ public class SafeLog4J {
 		})
 		
 		.installOn(inst);
-		
+
 	}
 
 }

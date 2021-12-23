@@ -16,7 +16,7 @@
 
 		public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, boolean loaded, DynamicType dynamicType) {
 			if ( matcher.matches(typeDescription.getName()) ) {
-				SafeLog4J.log4jFound = true;
+				SafeLog4J.log4ShellClassesFound = true;
 			}
 		}
 

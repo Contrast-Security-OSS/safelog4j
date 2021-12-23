@@ -78,7 +78,7 @@ public class LogAdvice {
         Loggers.log( "" );
         Loggers.log( "BLOCK: Searching for vulnerable JNDI lookup class..." );
 
-        if ( SafeLog4J.log4jFound ) {
+        if ( SafeLog4J.log4ShellClassesFound ) {
             Loggers.log( "  Log4J JNDI lookup class identified" );
             Loggers.log( "  Vulnerable methods neutralized" );
         } else {
