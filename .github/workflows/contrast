@@ -1,0 +1,38 @@
+on:
+  # Trigger analysis when pushing to main or an existing pull requests.  Also trigger on
+  # new pull requests
+  push:
+    branches:
+      - test
+  pull_request:
+      types: [opened, synchronize, reopened]
+name: Contrast Security Scan
+jobs:
+  build_and_scan:
+    permissions:
+        contents: read # for actions/checkout
+        security-events: write # for github/codeql-action/upload-sarif
+        actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    runs-on: ubuntu-latest
+    # check out project
+    steps:
+    - uses: actions/checkout@v2
+    # steps to build the artifact you want to scan
+    # -name: Build Project
+    # ...
+    # Scan Artifact    
+    - name: Contrast Scan Action
+      uses: Contrast-Security-OSS/contrastscan-action@v2.0.3
+      with:
+        artifact: mypath/target/myartifact.jar
+        apiKey: ${{ secrets.CONTRAST_API_KEY }}
+        orgId: ${{ secrets.CONTRAST_ORGANIZATION_ID }}
+        authHeader: ${{ secrets.CONTRAST_AUTH_HEADER }}
+        severity: high
+        fail: true
+    # To list vulnerabilities in the GitHub Security Tab of the repo include GitHub upload-sarif action
+    # The value of `sarif_file` must be `results.sarif` 
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: results.sarif
