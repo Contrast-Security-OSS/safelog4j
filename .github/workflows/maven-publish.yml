@@ -32,3 +32,8 @@ jobs:
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: results.sarif
