@@ -21,3 +21,4 @@
             apiKey: ${{ secrets.CONTRAST__API__API_KEY }}
             apiServiceKey: ${{ secrets.CONTRAST__API__SERVICE_KEY }}
             apiOrgId: ${{ secrets.CONTRAST__API__ORGANIZATION }}
+            resourceGroup: github
