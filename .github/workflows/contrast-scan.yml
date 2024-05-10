@@ -1,13 +1,13 @@
   name: Scan with local scanner
 
   on:
+    workflow_dispatch: 
     push:
       branches:
         - 'test'
 
   permissions:
     contents: read
-    checks: write
 
   jobs:
     scan:
@@ -22,4 +22,3 @@
             apiServiceKey: ${{ secrets.CONTRAST__API__SERVICE_KEY }}
             apiOrgId: ${{ secrets.CONTRAST__API__ORGANIZATION }}
             resourceGroup: github
-            projectName: githubtest
