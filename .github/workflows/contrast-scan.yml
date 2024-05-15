@@ -1,9 +1,10 @@
   name: Scan with local scanner
 
   on:
+    workflow_dispatch: 
     push:
       branches:
-        - 'test'
+        - 'main'
 
   permissions:
     contents: read
