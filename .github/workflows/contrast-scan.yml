@@ -1,0 +1,25 @@
+  name: Scan with local scanner
+
+  on:
+    workflow_dispatch: 
+    push:
+      branches:
+        - 'test'
+
+  permissions:
+    contents: read
+
+  jobs:
+    scan:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: Contrast-Security-OSS/contrast-local-scan-action@v1.0.1
+          with:
+            apiUrl: ${{ secrets.CONTRAST__API__URL }}
+            apiUserName: ${{ secrets.CONTRAST__API__USER_NAME }}
+            apiKey: ${{ secrets.CONTRAST__API__API_KEY }}
+            apiServiceKey: ${{ secrets.CONTRAST__API__SERVICE_KEY }}
+            apiOrgId: ${{ secrets.CONTRAST__API__ORGANIZATION }}
+            resourceGroup: github
+            projectName: github42
