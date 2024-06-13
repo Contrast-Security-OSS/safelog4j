@@ -1,4 +1,4 @@
-  name: Scan with local scanner
+  name: Scan with local scanner using GitHub Actions
 
   on:
     workflow_dispatch: 
